@@ -179,34 +179,56 @@ public class AnalyticsManager : MonoBehaviour
     private IEnumerator CheckServerAvailability()
     {
         if (string.IsNullOrEmpty(_url)) yield break;
-        VortexLog("Checking server availability at {0}/health", _url);
+        if (string.IsNullOrEmpty(_tenantId))
+        {
+            VortexLog("Tenant ID is not set. Analytics disabled.");
+            _serverAlive = false;
+            _isServerChecked = true;
+            yield break;
+        }
 
-        using UnityWebRequest request = UnityWebRequest.Get(_url + "/health");
+        string validateUrl = _url + "/validate?tenant_id=" + UnityWebRequest.EscapeURL(_tenantId);
+        VortexLog("Validating tenant at {0}", validateUrl);
+
+        using UnityWebRequest request = UnityWebRequest.Get(validateUrl);
         request.timeout = 5;
 
         yield return request.SendWebRequest();
 
         _serverAlive = request.result == UnityWebRequest.Result.Success;
+        bool tenantValid = _serverAlive && request.responseCode == 200;
         _isServerChecked = true;
 
-        VortexLog("Server check completed - Alive: {0}", _serverAlive ? "true" : "false");
-
-        if (_serverAlive)
+        if (!_serverAlive)
         {
-            if (_autoBatching && _autoFlushRoutine == null)
-                _autoFlushRoutine = StartCoroutine(AutoFlushRoutine());
-
-            if (!_autoBatching && _internalQueue.Count > 0)
-                StartCoroutine(FlushInternalQueue());
-        }
-        else
-        {
+            VortexLog("Server is unreachable. Analytics disabled.");
             if (_autoFlushRoutine != null)
             {
                 StopCoroutine(_autoFlushRoutine);
                 _autoFlushRoutine = null;
             }
+            yield break;
         }
+
+        if (!tenantValid)
+        {
+            VortexLog("Tenant ID '{0}' is invalid or unauthorized (HTTP {1}). Analytics disabled.", _tenantId, request.responseCode);
+            _serverAlive = false;
+            if (_autoFlushRoutine != null)
+            {
+                StopCoroutine(_autoFlushRoutine);
+                _autoFlushRoutine = null;
+            }
+            yield break;
+        }
+
+        VortexLog("Tenant validated successfully - Server alive, tenant '{0}' authorized.", _tenantId);
+
+        if (_autoBatching && _autoFlushRoutine == null)
+            _autoFlushRoutine = StartCoroutine(AutoFlushRoutine());
+
+        if (!_autoBatching && _internalQueue.Count > 0)
+            StartCoroutine(FlushInternalQueue());
     }
 
     private UnityWebRequest CreateRequest(string url, string json)
