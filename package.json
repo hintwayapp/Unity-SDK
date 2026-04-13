@@ -1,0 +1,32 @@
+{
+  "name": "io.vortexanalytics.unity-sdk",
+  "version": "1.0.0",
+  "displayName": "Vortex Analytics",
+  "description": "Unity SDK for Vortex Analytics — track events, sessions, and user behaviour.",
+  "unity": "2021.3",
+  "unityRelease": "0f1",
+  "documentationUrl": "https://vortexanalytics.io/docs",
+  "changelogUrl": "https://github.com/Vortex-Analytics-IO/Unity-SDK/blob/main/CHANGELOG.md",
+  "licensesUrl": "https://github.com/Vortex-Analytics-IO/Unity-SDK/blob/main/LICENSE",
+  "dependencies": {
+    "com.unity.nuget.newtonsoft-json": "3.2.1"
+  },
+  "keywords": [
+    "analytics",
+    "tracking",
+    "events",
+    "vortex"
+  ],
+  "author": {
+    "name": "Vortex Analytics",
+    "email": "support@vortexanalytics.io",
+    "url": "https://vortexanalytics.io"
+  },
+  "samples": [
+    {
+      "displayName": "Basic Usage",
+      "description": "Demo MonoBehaviour showing how to track events, use batching, and attach custom data.",
+      "path": "Samples~/BasicUsage"
+    }
+  ]
+}

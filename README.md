@@ -1,46 +1,42 @@
-# AnalyticsManager Documentation
+# Vortex Analytics — Unity SDK
 
-`AnalyticsManager` is a Unity component responsible for sending analytics events to a remote server.  
-It supports:
+Unity SDK for [Vortex Analytics](https://vortexanalytics.io). Supports immediate and batched event tracking, automatic session management, and graceful flush on app quit.
 
-- Immediate event tracking  
-- Batched event tracking  
-- Automatic retry when the server becomes available  
-- Session and device identification  
-- Manual or automatic initialization
+**Minimum Unity version:** 2021.3  
+**Package name:** `io.vortexanalytics.unity-sdk`
 
-## Dependencies
+---
 
-`AnalyticsManager` requires **Newtonsoft.Json** (Json.NET) for JSON serialization, which is essential for supporting dictionaries and complex data structures.
+## Installation
 
-### Installation in Your Unity Project
+### Option 1 — Git URL (recommended)
 
-#### Option 1: Unity Package Manager (Recommended)
+1. Open **Window → Package Manager**
+2. Click **+** → **Add package from git URL…**
+3. Enter:
+   ```
+   https://github.com/Vortex-Analytics-IO/Unity-SDK.git
+   ```
 
-1. Open your project in Unity
-2. Go to **Window** → **General** → **Package Manager**
-3. Click the **+** button and select **Add package by name**
-4. Enter: `com.unity.nuget.newtonsoft-json`
-5. Click **Add** and wait for the installation to complete
+### Option 2 — Local disk
 
-Alternatively, you can search for "Newtonsoft Json" directly in the Package Manager and install it from there.
+1. Clone or download this repository
+2. Open **Window → Package Manager**
+3. Click **+** → **Add package from disk…**
+4. Select the `package.json` at the root of this repo
 
-#### Option 2: Manual Installation (DLL)
+> **Note:** `Newtonsoft.Json` (`com.unity.nuget.newtonsoft-json ≥ 3.2.1`) is listed as a dependency and will be installed automatically when using either method above.
 
-1. Download Newtonsoft.Json DLLs from [NuGet](https://www.nuget.org/packages/Newtonsoft.Json/)
-2. Extract the DLL files
-3. Create a folder `Assets/Plugins` in your project (if it doesn't exist)
-4. Copy the DLL files into `Assets/Plugins`
-5. Restart Unity
+---
 
-#### Option 3: NuGetForUnity
+## Quick Start
 
-If you have [NuGetForUnity](https://github.com/GlassToeStudio/NuGetForUnity) installed:
+1. Open **Tools → Vortex Analytics → Add Analytics Manager to Scene**  
+   *(or add the `AnalyticsManager` component to any persistent GameObject manually)*
+2. In the Inspector, fill in **Tenant ID** and **Platform**
+3. Press Play — the SDK validates your tenant and starts tracking
 
-1. Go to **NuGet** → **Manage NuGet Packages**
-2. Search for **Newtonsoft.Json**
-3. Click **Install** on the latest version
-4. Unity will automatically download and configure it
+---
 
 ## Initialization
 
@@ -58,17 +54,19 @@ When `Initialize On Start` is enabled, the system initializes automatically duri
 
 ### Manual Initialization
 
-If you need to initialize analytics at runtime (e.g., after login):
+If you need to initialize at runtime (e.g. after login or consent flow):
 
 ```csharp
+using Vortex.Analytics;
+
 AnalyticsManager.Instance.Init(
     tenantId: "mygame",
-    url: "https://analytics.myserver.com",
+    url: "https://in.vortexanalytics.io",
     platform: "STEAM"
 );
 ```
 
-⚠️ This must be called before sending any events.
+> Disable **Initialize On Awake** in the Inspector when using this path.
 
 ### Internal Behavior
 
@@ -190,10 +188,32 @@ AnalyticsManager.Instance.ClearCustomData();
 - **Non-empty custom data** is included in every tracking event
 - Changing custom data affects only **new** events; previously sent events are not modified
 
-##  Lifecycle Handling
+## Namespace
+
+All public types live in the `Vortex.Analytics` namespace. Add the following `using` directive at the top of any script that references the SDK:
+
+```csharp
+using Vortex.Analytics;
+```
+
+## Lifecycle Handling
 
 Analytics are flushed automatically when:
 - The application loses focus (mobile background)
+- The application is paused (mobile)
 - The application is quitting
 
 This ensures minimal data loss.
+
+---
+
+## Samples
+
+A **Basic Usage** sample is bundled with the package.  
+Import it via **Window → Package Manager → Vortex Analytics → Samples → Basic Usage → Import**.
+
+---
+
+## License
+
+[MIT](LICENSE)
