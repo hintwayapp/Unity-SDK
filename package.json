@@ -5,7 +5,7 @@
   "description": "Unity SDK for Vortex Analytics — track events, sessions, and user behaviour.",
   "unity": "2021.3",
   "unityRelease": "0f1",
-  "documentationUrl": "https://vortexanalytics.io/docs",
+  "documentationUrl": "https://documentation.vortexanalytics.io",
   "changelogUrl": "https://github.com/Vortex-Analytics-IO/Unity-SDK/blob/main/CHANGELOG.md",
   "licensesUrl": "https://github.com/Vortex-Analytics-IO/Unity-SDK/blob/main/LICENSE",
   "dependencies": {
