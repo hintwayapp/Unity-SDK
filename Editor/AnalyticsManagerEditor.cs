@@ -1,8 +1,8 @@
 using UnityEditor;
 using UnityEngine;
-using Vortex.Analytics;
+using Hintway;
 
-namespace Vortex.Analytics.Editor
+namespace Hintway.Editor
 {
     [CustomEditor(typeof(AnalyticsManager))]
     internal class AnalyticsManagerEditor : UnityEditor.Editor
@@ -15,14 +15,14 @@ namespace Vortex.Analytics.Editor
             EditorGUILayout.LabelField("Editor Tools", EditorStyles.boldLabel);
 
             if (GUILayout.Button("Open Documentation"))
-                Application.OpenURL("https://vortexanalytics.io/docs");
+                Application.OpenURL("https://documentation.hintway.app");
         }
 
         // ──────────────────────────────────────────────────────────────────────
         //  Menu items
         // ──────────────────────────────────────────────────────────────────────
 
-        [MenuItem("Tools/Vortex Analytics/Add Analytics Manager to Scene", false, 10)]
+        [MenuItem("Tools/Hintway/Add Analytics Manager to Scene", false, 10)]
         private static void AddToScene()
         {
 #if UNITY_2022_2_OR_NEWER
@@ -32,7 +32,7 @@ namespace Vortex.Analytics.Editor
 #endif
             if (existing != null)
             {
-                Debug.LogWarning("[Vortex Analytics] An AnalyticsManager already exists in the scene.");
+                Debug.LogWarning("[Hintway] An AnalyticsManager already exists in the scene.");
                 Selection.activeGameObject = existing.gameObject;
                 return;
             }
@@ -41,13 +41,13 @@ namespace Vortex.Analytics.Editor
             go.AddComponent<AnalyticsManager>();
             Undo.RegisterCreatedObjectUndo(go, "Add Analytics Manager");
             Selection.activeGameObject = go;
-            Debug.Log("[Vortex Analytics] AnalyticsManager added to the scene.");
+            Debug.Log("[Hintway] AnalyticsManager added to the scene.");
         }
 
-        [MenuItem("Tools/Vortex Analytics/Open Documentation", false, 30)]
+        [MenuItem("Tools/Hintway/Open Documentation", false, 30)]
         private static void OpenDocumentation()
         {
-            Application.OpenURL("https://vortexanalytics.io/docs");
+            Application.OpenURL("https://documentation.hintway.app");
         }
     }
 }

@@ -6,10 +6,10 @@ using UnityEngine;
 using UnityEngine.Networking;
 using Newtonsoft.Json;
 
-namespace Vortex.Analytics
+namespace Hintway
 {
     /// <summary>
-    /// Singleton MonoBehaviour that tracks analytics events and forwards them to the Vortex Analytics backend.
+    /// Singleton MonoBehaviour that tracks analytics events and forwards them to the Hintway backend.
     /// Add it to a persistent GameObject in your first scene and configure Tenant ID, URL, and Platform
     /// in the Inspector, or call <see cref="Init"/> at runtime.
     /// </summary>
@@ -61,7 +61,7 @@ namespace Vortex.Analytics
 
         [Header("Connection")]
         [SerializeField] private string _tenantId;
-        [SerializeField] private string _url = "https://in.vortexanalytics.io";
+        [SerializeField] private string _url = "https://in.hintway.app";
         [SerializeField] private string _platform;
 
         [Header("Auto-Flush Settings")]
@@ -155,7 +155,7 @@ namespace Vortex.Analytics
             PlayerPrefs.SetString("device_identity", _identity);
             _sessionId = Guid.NewGuid().ToString();
             _appVersion = Application.version;
-            VortexLog("Session initialised — Identity: {0}, SessionId: {1}, AppVersion: {2}",
+            HintwayLog("Session initialised — Identity: {0}, SessionId: {1}, AppVersion: {2}",
                 _identity, _sessionId, _appVersion);
         }
 
@@ -308,14 +308,14 @@ namespace Vortex.Analytics
 
             if (string.IsNullOrEmpty(_tenantId))
             {
-                VortexLog("Tenant ID is not set. Analytics disabled.");
+                HintwayLog("Tenant ID is not set. Analytics disabled.");
                 _serverAlive = false;
                 _isServerChecked = true;
                 yield break;
             }
 
             string validateUrl = _url + "/validate?tenant_id=" + UnityWebRequest.EscapeURL(_tenantId);
-            VortexLog("Validating tenant at {0}", validateUrl);
+            HintwayLog("Validating tenant at {0}", validateUrl);
 
             using UnityWebRequest request = UnityWebRequest.Get(validateUrl);
             request.timeout = 5;
@@ -327,21 +327,21 @@ namespace Vortex.Analytics
 
             if (!_serverAlive)
             {
-                VortexLog("Server unreachable. Analytics disabled.");
+                HintwayLog("Server unreachable. Analytics disabled.");
                 StopAutoFlush();
                 yield break;
             }
 
             if (!tenantValid)
             {
-                VortexLog("Tenant '{0}' invalid or unauthorised (HTTP {1}). Analytics disabled.",
+                HintwayLog("Tenant '{0}' invalid or unauthorised (HTTP {1}). Analytics disabled.",
                     _tenantId, request.responseCode);
                 _serverAlive = false;
                 StopAutoFlush();
                 yield break;
             }
 
-            VortexLog("Tenant '{0}' validated successfully.", _tenantId);
+            HintwayLog("Tenant '{0}' validated successfully.", _tenantId);
 
             if (_autoBatching && _autoFlushRoutine == null)
                 _autoFlushRoutine = StartCoroutine(AutoFlushRoutine());
@@ -370,7 +370,7 @@ namespace Vortex.Analytics
                 _manualBatchedTracks.tracks.Clear();
             }
 
-            VortexLog("Posting manual batch — {0} events",
+            HintwayLog("Posting manual batch — {0} events",
                 JsonConvert.DeserializeObject<BatchedTracks>(json)?.tracks?.Count ?? 0);
 
             using UnityWebRequest request = CreateRequest(_url + "/batch", json);
@@ -391,7 +391,7 @@ namespace Vortex.Analytics
             }
 
             string json = JsonConvert.SerializeObject(new BatchedTracks { tracks = toSend });
-            VortexLog("Flushing internal queue — {0} events", toSend.Count);
+            HintwayLog("Flushing internal queue — {0} events", toSend.Count);
 
             using UnityWebRequest request = CreateRequest(_url + "/batch", json);
             yield return request.SendWebRequest();
@@ -424,12 +424,12 @@ namespace Vortex.Analytics
         {
             if (request.result != UnityWebRequest.Result.Success)
             {
-                VortexLog("Request failed: {0} — HTTP {1} — {2}", request.url, request.responseCode,
+                HintwayLog("Request failed: {0} — HTTP {1} — {2}", request.url, request.responseCode,
                     request.downloadHandler?.text ?? "(no body)");
             }
             else
             {
-                VortexLog("Request succeeded: {0}", request.url);
+                HintwayLog("Request succeeded: {0}", request.url);
             }
         }
 
@@ -442,11 +442,11 @@ namespace Vortex.Analytics
             }
         }
 
-        private void VortexLog(string format, params object[] args)
+        private void HintwayLog(string format, params object[] args)
         {
             if (!_verbose) return;
-            try { Debug.LogFormat("[Vortex] " + format, args); }
-            catch { Debug.Log("[Vortex] " + string.Format(format, args)); }
+            try { Debug.LogFormat("[Hintway] " + format, args); }
+            catch { Debug.Log("[Hintway] " + string.Format(format, args)); }
         }
 
         // ──────────────────────────────────────────────────────────────────────────
@@ -511,7 +511,7 @@ namespace Vortex.Analytics
             if (_manualBatchedTracks.tracks.Count == 0) return;
 
             StartCoroutine(PostBatchRoutine());
-            Debug.Log("[Vortex Analytics] Final flush initiated.");
+            Debug.Log("[Hintway] Final flush initiated.");
         }
     }
 }

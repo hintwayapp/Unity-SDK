@@ -1,8 +1,8 @@
 {
-  "name": "Vortex.Analytics.Editor",
-  "rootNamespace": "Vortex.Analytics.Editor",
+  "name": "Hintway.Editor",
+  "rootNamespace": "Hintway.Editor",
   "references": [
-    "Vortex.Analytics.Runtime"
+    "Hintway.Runtime"
   ],
   "includePlatforms": [
     "Editor"

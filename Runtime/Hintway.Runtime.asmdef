@@ -1,6 +1,6 @@
 {
-  "name": "Vortex.Analytics.Runtime",
-  "rootNamespace": "Vortex.Analytics",
+  "name": "Hintway.Runtime",
+  "rootNamespace": "Hintway",
   "references": [],
   "includePlatforms": [],
   "excludePlatforms": [],

@@ -1,12 +1,12 @@
 using System.Collections.Generic;
 using UnityEngine;
-using Vortex.Analytics;
+using Hintway;
 
 /// <summary>
-/// Drop this onto any GameObject to see how Vortex Analytics works.
-/// Requires an <see cref="AnalyticsManager"/> in the scene (Tools → Vortex Analytics → Add Analytics Manager).
+/// Drop this onto any GameObject to see how Hintway works.
+/// Requires an <see cref="AnalyticsManager"/> in the scene (Tools → Hintway → Add Analytics Manager).
 /// </summary>
-public class VortexBasicExample : MonoBehaviour
+public class HintwayBasicExample : MonoBehaviour
 {
     private void Start()
     {
